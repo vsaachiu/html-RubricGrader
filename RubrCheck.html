@@ -1,0 +1,2033 @@
+<html lang="en" data-focus-modality="pointer">
+    <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DES08 8.1 Rubric Checker — Criteria C &amp; D</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8f9fa;
+    color: #1a2e4a;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .app-header {
+    background: #1a2e4a;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .app-header-text { flex: 1; }
+  .app-header h1 {
+    margin: 0 0 0.1rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .header-sub {
+    font-size: 0.82rem;
+    opacity: 0.78;
+    margin: 0;
+  }
+  .btn-change-rubric {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.13);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 6px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s;
+    margin-top: 0.15rem;
+    white-space: nowrap;
+  }
+  .btn-change-rubric:hover { background: rgba(255,255,255,0.25); }
+  .btn-change-rubric:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+
+  /* Progress bar */
+  .progress-bar {
+    background: #1e3a5f;
+    padding: 0.45rem 1.5rem;
+    font-size: 0.82rem;
+    color: #c8d8ec;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .progress-bar span { font-weight: 600; color: #fff; }
+
+  /* Welcome screen */
+  .welcome-wrap {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .welcome-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(26,46,74,0.10);
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 100%;
+  }
+  .welcome-card h2 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.25rem;
+    color: #1a2e4a;
+  }
+  .welcome-card p {
+    color: #5a6a7e;
+    margin: 0 0 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .welcome-card label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+  }
+  .welcome-card input[type="text"] {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 2px solid #d1d9e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .welcome-card input[type="text"]:focus { border-color: #1a2e4a; }
+  .welcome-card input[type="text"].invalid { border-color: #ef4444; }
+  .error-msg {
+    color: #ef4444;
+    font-size: 0.82rem;
+    margin: 0.3rem 0 0 0;
+    min-height: 1.1em;
+  }
+  .btn-start {
+    margin-top: 1.2rem;
+    width: 100%;
+    background: #1a2e4a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-start:hover { background: #243f66; }
+  .btn-start:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+
+  /* View toggle */
+  .view-toggle-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    border: 2px solid #1a2e4a;
+    background: transparent;
+    color: #1a2e4a;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s, color 0.13s;
+  }
+  .toggle-btn.active {
+    background: #1a2e4a;
+    color: #fff;
+  }
+  .toggle-btn:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+
+  .comments-panel {
+    padding: 0.75rem 1.5rem;
+    background: #f0f4f8;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .comments-panel label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .comments-panel textarea {
+    display: block;
+    width: 100%;
+    min-height: 6rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font: inherit;
+    resize: vertical;
+  }
+  .comments-panel textarea:focus { outline: 3px solid #4a90d9; outline-offset: 1px; }
+
+  /* Focus mode band selector */
+  .band-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    background: #f0f4f8;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .band-selector label { font-weight: 600; font-size: 0.875rem; }
+  .band-btn {
+    padding: 0.3rem 0.85rem;
+    border-radius: 16px;
+    border: 2px solid #9ca3af;
+    background: #fff;
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .band-btn.active {
+    border-color: #1a2e4a;
+    background: #1a2e4a;
+    color: #fff;
+  }
+  .band-btn:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+
+  /* Main content */
+  .main-content {
+    padding: 1.25rem 1.5rem 7rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Full view: two columns */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  @media (max-width: 780px) {
+    .criteria-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Criterion card */
+  .criterion-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(26,46,74,0.08);
+    overflow: hidden;
+  }
+  .criterion-title {
+    background: #1a2e4a;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  /* Band section */
+  .band-section {
+    border-bottom: 1px solid #e9edf2;
+  }
+  .band-section:last-child { border-bottom: none; }
+
+  .band-header {
+    padding: 0.55rem 1rem;
+    background: #f0f4f8;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1a2e4a;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* Narrative */
+  .narrative-text {
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    color: #5a6a7e;
+    font-style: italic;
+  }
+
+  /* Preamble */
+  .preamble-text {
+    padding: 0.5rem 1rem 0.25rem;
+    font-size: 0.82rem;
+    color: #5a6a7e;
+    font-style: italic;
+  }
+
+  /* Checklist item */
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f4f8;
+    transition: background 0.1s;
+    user-select: none;
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-item:hover { background: #f7fafc; }
+  .checklist-item:focus { outline: 3px solid #4a90d9; outline-offset: -2px; background: #eef4fb; }
+  .checklist-item.subitem {
+    padding-left: 2.2rem;
+    background: #fafbfc;
+  }
+  .checklist-item.subitem:hover { background: #f0f6ff; }
+
+  /* Status pill — four states */
+  .status-pill {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.18rem 0.55rem;
+    border-radius: 12px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+    margin-top: 0.1rem;
+  }
+
+  /* blank → gray */
+  .status-pill.blank {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1.5px solid #d1d5db;
+  }
+
+  /* not_started → red "Not Done" */
+  .status-pill.not_started {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1.5px solid #fca5a5;
+  }
+
+  /* complete → green */
+  .status-pill.complete {
+    background: #dcfce7;
+    color: #166534;
+    border: 1.5px solid #86efac;
+  }
+
+  /* almost → amber */
+  .status-pill.almost {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1.5px solid #fcd34d;
+  }
+
+  .item-text {
+    font-size: 0.875rem;
+    color: #1a2e4a;
+    flex: 1;
+    padding-top: 0.05rem;
+  }
+
+  /* Focus mode */
+  .focus-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  @media (max-width: 780px) {
+    .focus-grid { grid-template-columns: 1fr; }
+  }
+  .focus-mode .checklist-item {
+    padding: 0.65rem 1rem;
+  }
+  .focus-mode .item-text {
+    font-size: 0.95rem;
+  }
+  .focus-mode .band-header {
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
+  }
+
+  /* Footer */
+  .export-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 90;
+    box-shadow: 0 -2px 10px rgba(26,46,74,0.07);
+  }
+  .btn-export {
+    padding: 0.55rem 1.25rem;
+    border-radius: 8px;
+    border: 2px solid #1a2e4a;
+    background: #fff;
+    color: #1a2e4a;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s, color 0.13s;
+  }
+  .btn-export:hover { background: #1a2e4a; color: #fff; }
+  .btn-export:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+
+  /* ── Library screen ── */
+  .library-wrap {
+    padding: 1.5rem 1.5rem 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .library-header-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .library-header-row h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #1a2e4a;
+    flex: 1;
+  }
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 860px) {
+    .library-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 540px) {
+    .library-grid { grid-template-columns: 1fr; }
+  }
+  .library-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(26,46,74,0.09);
+    padding: 1.1rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+  }
+  .library-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #1a2e4a;
+    padding-right: 2rem;
+    line-height: 1.3;
+  }
+  .library-card-id {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-family: monospace;
+    word-break: break-all;
+  }
+  .library-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .btn-select {
+    flex: 1;
+    background: #1a2e4a;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s;
+  }
+  .btn-select:hover { background: #243f66; }
+  .btn-select:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+  .btn-delete {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0.2rem 0.3rem;
+    border-radius: 5px;
+    line-height: 1;
+    transition: color 0.12s, background 0.12s;
+  }
+  .btn-delete:hover { color: #ef4444; background: #fee2e2; }
+  .btn-delete:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+  .library-error {
+    color: #ef4444;
+    font-size: 0.82rem;
+    margin: 0.2rem 0 0;
+    min-height: 1em;
+  }
+  .library-import-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* ── Paste overlay ── */
+  .overlay-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .overlay-panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+    padding: 1.75rem 1.5rem 1.5rem;
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .overlay-panel h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.05rem;
+    color: #1a2e4a;
+  }
+  .overlay-panel textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.65rem 0.85rem;
+    border: 2px solid #d1d9e0;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: monospace;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .overlay-panel textarea:focus { border-color: #1a2e4a; }
+  .overlay-panel textarea.invalid { border-color: #ef4444; }
+  .overlay-btn-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-overlay-load {
+    background: #1a2e4a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s;
+  }
+  .btn-overlay-load:hover { background: #243f66; }
+  .btn-overlay-load:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+  .btn-overlay-cancel {
+    background: #f3f4f6;
+    color: #374151;
+    border: 2px solid #d1d9e0;
+    border-radius: 8px;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.13s;
+  }
+  .btn-overlay-cancel:hover { background: #e5e7eb; }
+  .btn-overlay-cancel:focus { outline: 3px solid #4a90d9; outline-offset: 2px; }
+  .overlay-error {
+    color: #ef4444;
+    font-size: 0.82rem;
+    min-height: 1em;
+    margin: 0;
+  }
+
+  /* Library page top header bar */
+  .library-page-header {
+    background: #1a2e4a;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .library-page-header h1 {
+    margin: 0 0 0.1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .library-page-header p {
+    margin: 0;
+    font-size: 0.82rem;
+    opacity: 0.78;
+  }
+</style>
+<link rel="stylesheet" href="https://app.flintk12.com/artifact-runtime/flint-artifact.css?v=642133d86054"></head>
+<body>
+
+<div id="app"><div class="library-page-header"><h1>Rubric Library</h1><p>Select a rubric to begin self-assessment, or import a new one.</p></div><div class="library-wrap"><div class="library-import-row" style="margin-bottom: 1rem;"><button class="btn-export">Import Rubric JSON</button><button class="btn-export">Paste JSON</button><p class="library-error" role="alert"></p></div><div class="library-grid"><div class="library-card"><button class="btn-delete" title="Delete this rubric" aria-label="Delete DES08 8.1 Build Guide — Criteria C &amp; D">🗑</button><div class="library-card-title">DES08 8.1 Build Guide — Criteria C &amp; D</div><div class="library-card-id">des08-8-1-build-guide-cd</div><div class="library-card-actions"><button class="btn-select">Select</button></div></div></div></div></div>
+<input type="file" id="file-import-input" accept=".json" style="display:none">
+<input type="file" id="completed-import-input" accept=".json,application/json" style="display:none">
+
+<script>
+// ── Built-in rubric ────────────────────────────────────────────────────────
+const BUILTIN_RUBRIC = {
+  "rubric_id": "des08-8-1-build-guide-cd",
+  "title": "DES08 8.1 Build Guide — Criteria C & D",
+  "criteria": [
+    {
+      "id": "criterion_c",
+      "name": "Criterion C: Creating the Solution",
+      "levels": [
+        {"band":"0","band_label":"0","descriptor_type":"narrative","narrative":"The student does not reach a standard described by any of the descriptors below."},
+        {"band":"1-2","band_label":"1–2","descriptor_type":"narrative","narrative":"The following may be true: Page 1 overview is incomplete. The build/test table on Pages 2–5 is disorganized or lacks screenshots. Full code in the tab is missing or incomplete. The simulation has major bugs and does not run as intended."},
+        {"band":"3-4","band_label":"3–4","descriptor_type":"checklist","preamble":"(Page 1 states Problem and/or Audience)","items":[
+          {"id":"c_34_1","text":"Page 1 has basic solution images. They may be unclear or too general.","status":"not_started"},
+          {"id":"c_34_2","text":"Pages 2–5 provide a basic step-by-step table with some screenshots.","status":"not_started"},
+          {"id":"c_34_3","text":"A peer could build a basic version, but may be confused.","status":"not_started"},
+          {"id":"c_34_4","text":"Some full code is pasted in the tab.","status":"not_started"},
+          {"id":"c_34_5","text":"I may have some basic comments in my code","status":"not_started"},
+          {"id":"c_34_6","text":"I have used a loop and counter (eg, tick)","status":"not_started"},
+          {"id":"c_34_7","text":"The simulation works like the original tutorial / the simulation has some problems and partially works / the simulation relies overly on code not generated by the student","status":"not_started"},
+          {"id":"c_34_8","text":"I can state one technical problem or tip about programming in JavaScript","status":"not_started"}
+        ]},
+        {"band":"5-6","band_label":"5–6","descriptor_type":"checklist","preamble":"(Page 1 outlines an appropriate Problem and Audience)","items":[
+          {"id":"c_56_1","text":"Page 1 clearly shows the product and some features.","status":"not_started"},
+          {"id":"c_56_2","text":"Pages 2–5 construct a logical, step-by-step guide with","status":"not_started","sub_items":[
+            {"id":"c_56_2_1","text":"clear images","status":"not_started"},
+            {"id":"c_56_2_2","text":"Time estimates","status":"not_started"},
+            {"id":"c_56_2_3","text":"Resources needed","status":"not_started"},
+            {"id":"c_56_2_4","text":"instructions","status":"not_started"}
+          ]},
+          {"id":"c_56_3","text":"I have used an if/else (conditional) to control output(s), in extension to the tutorial","status":"not_started"},
+          {"id":"c_56_4","text":"I demonstrate good coding skills using loops and variables. Variables are named appropriately","status":"not_started"},
+          {"id":"c_56_5","text":"Full code is commented, showing planning and understanding.","status":"not_started"},
+          {"id":"c_56_6","text":"Notes column justifies 2+ modifications, bug fixes, logic decisions or deeper understanding of JS from creation process","status":"not_started"},
+          {"id":"c_56_7","text":"AI use is appropriate and logged or no AI was used.","status":"not_started"}
+        ]},
+        {"band":"7-8","band_label":"7–8","descriptor_type":"checklist","preamble":"(Page 1 provides a clear presentation of Problem, Audience, and Solution in action. The solution is appropriate for a well-defined and relevant problem.)","items":[
+          {"id":"c_78_1","text":"Pages 2–5 construct an exceptionally clear build & test guide.","status":"not_started"},
+          {"id":"c_78_2","text":"A peer could follow the guide to recreate and test the simulation.","status":"not_started"},
+          {"id":"c_78_3","text":"Code in the tab demonstrates excellent coding skills (state management, timing loops).","status":"not_started"},
+          {"id":"c_78_4","text":"Effort and research has gone into solving extended or advanced features.","status":"not_started"},
+          {"id":"c_78_5","text":"Where AI has been used, it is transparent, focused, and has led to deeper learning.","status":"not_started"},
+          {"id":"c_78_6","text":"Notes showcases deeper understanding.","status":"not_started"}
+        ]}
+      ]
+    },
+    {
+      "id":"criterion_d","name":"Criterion D: Testing & Evaluating","levels":[
+        {"band":"0","band_label":"0","descriptor_type":"narrative","narrative":"The student does not reach a standard described by any of the descriptors below."},
+        {"band":"1-2","band_label":"1–2","descriptor_type":"narrative","narrative":"The following may be true: Testing is unclear or offers, disorganised, incomplete or irrelevant. There is no evidence of system performance. Suggestions / improvements or overall impact evaluation is incomplete."},
+        {"band":"3-4","band_label":"3–4","descriptor_type":"checklist","items":[
+          {"id":"d_34_1","text":"I outline a simple basic test","status":"not_started"},
+          {"id":"d_34_2","text":"I perform a relevant test","status":"not_started"},
+          {"id":"d_34_3","text":"I record the outcome of the test","status":"not_started"},
+          {"id":"d_34_4","text":"I state whether the product is successful or not","status":"not_started"},
+          {"id":"d_34_5","text":"I state a relevant suggestion(s) for improvements","status":"not_started"},
+          {"id":"d_34_6","text":"I state an impact of the simulation","status":"not_started"}
+        ]},
+        {"band":"5-6","band_label":"5–6","descriptor_type":"checklist","items":[
+          {"id":"d_56_1","text":"I outline appropriate tests","status":"not_started"},
+          {"id":"d_56_2","text":"I perform relevant testing","status":"not_started"},
+          {"id":"d_56_3","text":"I record relevant data from the tests, including data that might provide insight","status":"not_started"},
+          {"id":"d_56_4","text":"I state whether the product is successful or not over 2 or more different measures / specifications","status":"not_started"},
+          {"id":"d_56_5","text":"I outline relevant suggestions for improvements","status":"not_started"},
+          {"id":"d_56_6","text":"I describe the impact of the simulation","status":"not_started"}
+        ]},
+        {"band":"7-8","band_label":"7–8","descriptor_type":"checklist","items":[
+          {"id":"d_78_1","text":"I outline appropriate and detailed tests that others could replicate","status":"not_started"},
+          {"id":"d_78_2","text":"I perform relevant and detailed testing","status":"not_started"},
+          {"id":"d_78_3","text":"I record relevant data from the tests, including data that provides insight; Data is organised and clear","status":"not_started"},
+          {"id":"d_78_4","text":"I discuss whether the product is successful or not using multiple different measures / specifications","status":"not_started"},
+          {"id":"d_78_5","text":"I present relevant suggestions for improvements","status":"not_started"},
+          {"id":"d_78_6","text":"I critically discuss the impact of the simulation","status":"not_started"}
+        ]}
+      ]
+    }
+  ],
+  "meta":{"version":"1.0","status_options":["blank","complete","almost","not_started"],"toggle_cycle":["blank","complete","almost","not_started"],"created":"2026-09-22"}
+};
+
+// ── In-memory rubric library ───────────────────────────────────────────────
+var RUBRIC_LIBRARY_STORAGE_KEY = 'rubricCheckerLibrary';
+
+function loadStoredRubricLibrary() {
+  try {
+    var stored = localStorage.getItem(RUBRIC_LIBRARY_STORAGE_KEY);
+    if (!stored) return {};
+    var parsed = JSON.parse(stored);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+
+    var library = {};
+    Object.keys(parsed).forEach(function(rubricId) {
+      var rubric = parsed[rubricId];
+      if (rubric && rubric.rubric_id === rubricId && !validateRubric(rubric)) {
+        library[rubricId] = JSON.parse(JSON.stringify(rubric));
+      }
+    });
+    return library;
+  } catch(e) {
+    return {};
+  }
+}
+
+var _library = loadStoredRubricLibrary();
+
+function persistRubricLibrary() {
+  try {
+    localStorage.setItem(RUBRIC_LIBRARY_STORAGE_KEY, JSON.stringify(_library));
+  } catch(e) {}
+}
+
+function saveRubricToLibrary(rubricData) {
+  _library[rubricData.rubric_id] = JSON.parse(JSON.stringify(rubricData));
+  persistRubricLibrary();
+}
+
+function loadLibrary() {
+  return JSON.parse(JSON.stringify(_library));
+}
+
+function deleteRubricFromLibrary(rubric_id) {
+  delete _library[rubric_id];
+  persistRubricLibrary();
+}
+
+function listLibrary() {
+  return Object.values(_library).map(function(r) {
+    return { rubric_id: r.rubric_id, title: r.title };
+  });
+}
+
+// Seed built-in
+if (!_library[BUILTIN_RUBRIC.rubric_id]) saveRubricToLibrary(BUILTIN_RUBRIC);
+
+// ── App State ──────────────────────────────────────────────────────────────
+var activeRubric = null;
+var studentName = '';
+var currentView = 'library'; // 'library' | 'welcome' | 'full' | 'focus' | 'tag'
+var focusBand = '3-4';
+var selectedTag = '';
+var assessmentComments = '';
+var commentsExpanded = false;
+var libraryError = '';
+var showPasteOverlay = false;
+var showRubricEditor = false;
+var editingRubricId = '';
+var showMarkdownOverlay = false;
+var completedLoadMessage = '';
+
+// Cycle: blank → complete → almost → not_started → blank
+var CYCLE = ['blank', 'complete', 'almost', 'not_started'];
+
+function cycleStatus(current) {
+  var idx = CYCLE.indexOf(current);
+  return CYCLE[(idx + 1) % CYCLE.length];
+}
+
+// ── Deep copy + reset statuses ─────────────────────────────────────────────
+function resetItemStatuses(item) {
+  item.status = 'blank';
+  if (item.sub_items) {
+    item.sub_items.forEach(function(sub) { resetItemStatuses(sub); });
+  }
+}
+
+function deepCopyAndReset(rubricData) {
+  var copy = JSON.parse(JSON.stringify(rubricData));
+  copy.criteria.forEach(function(criterion) {
+    criterion.levels.forEach(function(level) {
+      if (level.descriptor_type === 'checklist' && level.items) {
+        level.items.forEach(function(item) { resetItemStatuses(item); });
+      }
+    });
+  });
+  return copy;
+}
+
+// ── Validation ─────────────────────────────────────────────────────────────
+function validateItem(item, path) {
+  if (typeof item.id !== 'string' || !item.id) return path + '.id must be a non-empty string';
+  if (typeof item.text !== 'string' || !item.text) return path + '.text must be a non-empty string';
+  if (typeof item.status !== 'string') return path + '.status must be a string';
+  if (item.sub_items) {
+    if (!Array.isArray(item.sub_items)) return path + '.sub_items must be an array';
+    for (var i = 0; i < item.sub_items.length; i++) {
+      var err = validateItem(item.sub_items[i], path + '.sub_items[' + i + ']');
+      if (err) return err;
+    }
+  }
+  return null;
+}
+
+function validateRubric(obj) {
+  if (!obj || typeof obj !== 'object') return 'JSON must be an object';
+  if (typeof obj.rubric_id !== 'string' || !obj.rubric_id) return 'rubric_id must be a non-empty string';
+  if (typeof obj.title !== 'string' || !obj.title) return 'title must be a non-empty string';
+  if (!Array.isArray(obj.criteria) || obj.criteria.length === 0) return 'criteria must be a non-empty array';
+  for (var ci = 0; ci < obj.criteria.length; ci++) {
+    var c = obj.criteria[ci];
+    var cp = 'criteria[' + ci + ']';
+    if (typeof c.id !== 'string' || !c.id) return cp + '.id must be a non-empty string';
+    if (typeof c.name !== 'string' || !c.name) return cp + '.name must be a non-empty string';
+    if (!Array.isArray(c.levels) || c.levels.length === 0) return cp + '.levels must be a non-empty array';
+    for (var li = 0; li < c.levels.length; li++) {
+      var lv = c.levels[li];
+      var lp = cp + '.levels[' + li + ']';
+      if (typeof lv.band !== 'string') return lp + '.band must be a string';
+      if (typeof lv.band_label !== 'string') return lp + '.band_label must be a string';
+      if (lv.descriptor_type !== 'narrative' && lv.descriptor_type !== 'checklist') return lp + '.descriptor_type must be "narrative" or "checklist"';
+      if (lv.descriptor_type === 'narrative') {
+        if (typeof lv.narrative !== 'string' || !lv.narrative) return lp + '.narrative must be a non-empty string';
+      }
+      if (lv.descriptor_type === 'checklist') {
+        if (!Array.isArray(lv.items)) return lp + '.items must be an array';
+        for (var ii = 0; ii < lv.items.length; ii++) {
+          var err = validateItem(lv.items[ii], lp + '.items[' + ii + ']');
+          if (err) return err;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function importRubricJSON(jsonText) {
+  var obj;
+  try { obj = JSON.parse(jsonText); } catch(e) { return 'Invalid JSON: ' + e.message; }
+  var err = validateRubric(obj);
+  if (err) return 'Validation error: ' + err;
+  var cleaned = deepCopyAndReset(obj);
+  saveRubricToLibrary(cleaned);
+  return null;
+}
+
+function loadCompletedRubricJSON(jsonText) {
+  var rubric;
+  try {
+    rubric = JSON.parse(jsonText);
+  } catch(e) {
+    return 'Invalid JSON: ' + e.message;
+  }
+
+  var err = validateRubric(rubric);
+  if (err) return 'Validation error: ' + err;
+  if (typeof rubric.student_name !== 'string') {
+    return 'This file does not include a student name. Choose an exported completed rubric JSON file.';
+  }
+
+  activeRubric = JSON.parse(JSON.stringify(rubric));
+  studentName = rubric.student_name;
+  assessmentComments = typeof rubric.comments === 'string' ? rubric.comments : '';
+  commentsExpanded = false;
+  selectedTag = '';
+  currentView = 'full';
+  completedLoadMessage = 'Loaded completed assessment for ' + studentName + '.';
+  return null;
+}
+
+// ── Progress ───────────────────────────────────────────────────────────────
+function getProgress(criterionId) {
+  var total = 0, complete = 0;
+  var criterion = activeRubric.criteria.find(function(c) { return c.id === criterionId; });
+  criterion.levels.forEach(function(level) {
+    if (level.descriptor_type === 'checklist') {
+      level.items.forEach(function(item) {
+        total++;
+        if (item.status === 'complete') complete++;
+        if (item.sub_items) {
+          item.sub_items.forEach(function(sub) {
+            total++;
+            if (sub.status === 'complete') complete++;
+          });
+        }
+      });
+    }
+  });
+  return { total: total, complete: complete };
+}
+
+function findItem(id) {
+  for (var ci = 0; ci < activeRubric.criteria.length; ci++) {
+    var criterion = activeRubric.criteria[ci];
+    for (var li = 0; li < criterion.levels.length; li++) {
+      var level = criterion.levels[li];
+      if (level.descriptor_type === 'checklist') {
+        for (var ii = 0; ii < level.items.length; ii++) {
+          var item = level.items[ii];
+          if (item.id === id) return item;
+          if (item.sub_items) {
+            for (var si = 0; si < item.sub_items.length; si++) {
+              if (item.sub_items[si].id === id) return item.sub_items[si];
+            }
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function toggleItem(id) {
+  var item = findItem(id);
+  if (!item) return;
+  item.status = cycleStatus(item.status);
+  render();
+}
+
+// ── Formatting helpers ─────────────────────────────────────────────────────
+function formatDate(d) {
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function sanitizeFilename(name) {
+  return name.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'Student';
+}
+
+function statusLabel(status) {
+  if (status === 'blank') return '';
+  if (status === 'complete') return 'Complete';
+  if (status === 'almost') return 'Almost';
+  return 'Not Done';
+}
+
+function pillClass(status) {
+  return 'status-pill ' + status;
+}
+
+// ── Export ─────────────────────────────────────────────────────────────────
+function escapePipe(text) {
+  return text.replace(/\|/g, '\\|');
+}
+
+function buildMarkdown() {
+  var now = formatDate(new Date());
+  var md = '';
+  md += '# ' + activeRubric.title + '\n\n';
+  md += '**Student:** ' + studentName + '  \n';
+  md += '**Date:** ' + now + '\n\n';
+  md += '---\n\n';
+
+  activeRubric.criteria.forEach(function(criterion) {
+    md += '## ' + criterion.name + '\n\n';
+    criterion.levels.forEach(function(level) {
+      md += '### Band ' + level.band_label + '\n\n';
+      if (level.descriptor_type === 'narrative') {
+        md += '> ' + level.narrative + '\n\n';
+      } else {
+        if (level.preamble) md += '_' + level.preamble + '_\n\n';
+        md += '| Status | Item |\n';
+        md += '|--------|------|\n';
+        level.items.forEach(function(item) {
+          md += '| ' + statusLabel(item.status) + ' | ' + escapePipe(item.text) + ' |\n';
+          if (item.sub_items) {
+            item.sub_items.forEach(function(sub) {
+              md += '| ' + statusLabel(sub.status) + ' |   -> ' + escapePipe(sub.text) + ' |\n';
+            });
+          }
+        });
+        md += '\n';
+      }
+    });
+    md += '\n';
+  });
+  md += '## Comments\n\n';
+  if (assessmentComments) md += assessmentComments + '\n';
+  md += '\n';
+  return md;
+}
+
+function escapeHTML(text) {
+  return String(text).replace(/[&<>"']/g, function(character) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+  });
+}
+
+function statusColors(status) {
+  if (status === 'complete') return { background: '#dcfce7', color: '#166534' };
+  if (status === 'almost') return { background: '#fef3c7', color: '#92400e' };
+  if (status === 'not_started') return { background: '#fee2e2', color: '#991b1b' };
+  return { background: '#f3f4f6', color: '#4b5563' };
+}
+
+function buildGoogleDocsHTML() {
+  var html = '<p style="font-family:Arial,sans-serif;font-size:9pt;margin:0 0 3pt"><strong>Student: ' + escapeHTML(studentName) + '</strong></p>';
+  html += '<h1 style="font-family:Arial,sans-serif;font-size:14pt;line-height:1.1;color:#1a2e4a;margin:0 0 3pt">' + escapeHTML(activeRubric.title) + '</h1>';
+  html += '<p style="font-family:Arial,sans-serif;font-size:8pt;margin:0 0 5pt">Date: ' + escapeHTML(formatDate(new Date())) + '</p>';
+
+  activeRubric.criteria.forEach(function(criterion) {
+    html += '<h2 style="font-family:Arial,sans-serif;font-size:11pt;line-height:1.1;color:#1a2e4a;border-bottom:1px solid #1a2e4a;padding-bottom:2px;margin:8pt 0 3pt">' + escapeHTML(criterion.name) + '</h2>';
+    criterion.levels.forEach(function(level) {
+      var bandNumber = parseInt(level.band, 10);
+      var bandColor = bandNumber >= 7 ? '#dcfce7' : (bandNumber >= 5 ? '#fef3c7' : (bandNumber >= 3 ? '#dbeafe' : '#f3f4f6'));
+      html += '<h3 style="font-family:Arial,sans-serif;font-size:9pt;line-height:1.1;background-color:' + bandColor + ';color:#1a2e4a;padding:2px 4px;margin:5pt 0 2pt">Band ' + escapeHTML(level.band_label) + '</h3>';
+      if (level.descriptor_type === 'narrative') {
+        html += '<p style="font-family:Arial,sans-serif;font-size:8.5pt;line-height:1.1;margin:2pt 0 4pt">' + escapeHTML(level.narrative).replace(/\n/g, '<br>') + '</p>';
+        return;
+      }
+      if (level.preamble) html += '<p style="font-family:Arial,sans-serif;font-size:8pt;line-height:1.1;margin:2pt 0"><em>' + escapeHTML(level.preamble) + '</em></p>';
+      html += '<table border="1" cellpadding="3" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:8pt;line-height:1.05;width:100%"><thead><tr><th style="background-color:#e5e7eb;text-align:left;width:68px">Status</th><th style="background-color:#e5e7eb;text-align:left">Item</th></tr></thead><tbody>';
+
+      function appendRow(item, isSubItem) {
+        var colors = statusColors(item.status);
+        var label = statusLabel(item.status) || 'Blank';
+        html += '<tr><td style="background-color:' + colors.background + ';color:' + colors.color + ';font-size:7.5pt;font-weight:bold;white-space:nowrap">' + label + '</td><td style="font-family:Arial,sans-serif;font-size:8pt;line-height:1.05">' + (isSubItem ? '&nbsp;&nbsp;' : '') + escapeHTML(item.text) + '</td></tr>';
+      }
+
+      level.items.forEach(function(item) {
+        appendRow(item, false);
+        (item.sub_items || []).forEach(function(subItem) { appendRow(subItem, true); });
+      });
+      html += '</tbody></table>';
+    });
+  });
+  html += '<h2 style="font-family:Arial,sans-serif;font-size:11pt;color:#1a2e4a;margin:8pt 0 3pt">Comments</h2>';
+  html += '<table border="1" cellpadding="4" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;width:100%"><tbody><tr><td style="height:64pt;vertical-align:top">' + (assessmentComments ? escapeHTML(assessmentComments).replace(/\n/g, '<br>') : '&nbsp;<br><br><br>') + '</td></tr></tbody></table>';
+  return html;
+}
+
+function buildGoogleDocsPlainText() {
+  var lines = ['Student: ' + studentName, activeRubric.title, 'Date: ' + formatDate(new Date()), ''];
+  activeRubric.criteria.forEach(function(criterion) {
+    lines.push(criterion.name);
+    criterion.levels.forEach(function(level) {
+      lines.push('Band ' + level.band_label);
+      if (level.descriptor_type === 'narrative') {
+        lines.push(level.narrative);
+      } else {
+        if (level.preamble) lines.push(level.preamble);
+        level.items.forEach(function(item) {
+          lines.push((statusLabel(item.status) || 'Blank') + ': ' + item.text);
+          (item.sub_items || []).forEach(function(subItem) {
+            lines.push('  ' + (statusLabel(subItem.status) || 'Blank') + ': ' + subItem.text);
+          });
+        });
+      }
+      lines.push('');
+    });
+  });
+  lines.push('Comments:');
+  if (assessmentComments) lines.push(assessmentComments);
+  lines.push('');
+  lines.push('');
+  return lines.join('\n');
+}
+
+function copyRichContentFallback(html) {
+  var container = document.createElement('div');
+  container.contentEditable = 'true';
+  container.style.cssText = 'position:fixed;left:-10000px;top:0;';
+  container.innerHTML = html;
+  document.body.appendChild(container);
+  var range = document.createRange();
+  range.selectNodeContents(container);
+  var selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  var copied = document.execCommand('copy');
+  selection.removeAllRanges();
+  document.body.removeChild(container);
+  return copied;
+}
+
+function copyForGoogleDocs(statusElement) {
+  var html = buildGoogleDocsHTML();
+  var plainText = buildGoogleDocsPlainText();
+  var copied = function() { statusElement.textContent = 'Copied. Paste into Google Docs.'; };
+  var failed = function() {
+    statusElement.textContent = copyRichContentFallback(html)
+      ? 'Copied. Paste into Google Docs.'
+      : 'Copy was blocked. Select and copy the rubric from Full View.';
+  };
+
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([plainText], { type: 'text/plain' })
+    })]).then(copied).catch(failed);
+  } else {
+    failed();
+  }
+}
+
+function buildJSON() {
+  var out = JSON.parse(JSON.stringify(activeRubric));
+  out.student_name = studentName;
+  out.comments = assessmentComments;
+  out.exported_at = new Date().toISOString();
+  return JSON.stringify(out, null, 2);
+}
+
+function downloadFile(content, filename, mimeType) {
+  var blob = new Blob([content], { type: mimeType });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
+function exportMarkdown() {
+  showMarkdownOverlay = true;
+  render();
+}
+
+function exportJSON() {
+  var fname = sanitizeFilename(studentName) + '_' + sanitizeFilename(activeRubric.rubric_id) + '_Rubric.json';
+  downloadFile(buildJSON(), fname, 'application/json');
+}
+
+// ── Render helpers ─────────────────────────────────────────────────────────
+function renderStatusPill(status) {
+  var el = document.createElement('span');
+  el.className = pillClass(status);
+  el.textContent = statusLabel(status);
+  return el;
+}
+
+function renderChecklistItem(item, isSub) {
+  var row = document.createElement('div');
+  row.className = 'checklist-item' + (isSub ? ' subitem' : '');
+  row.tabIndex = 0;
+  row.setAttribute('role', 'button');
+  row.setAttribute('aria-label', item.text + ', status: ' + (statusLabel(item.status) || 'Blank') + '. Click to cycle.');
+
+  var pill = renderStatusPill(item.status);
+  var textEl = document.createElement('span');
+  textEl.className = 'item-text';
+  textEl.textContent = item.text;
+
+  row.appendChild(pill);
+  row.appendChild(textEl);
+
+  function doToggle() { toggleItem(item.id); }
+  row.addEventListener('click', doToggle);
+  row.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doToggle(); }
+  });
+
+  return row;
+}
+
+function getItemTags(item) {
+  return [item.tag, item.tags].filter(function(value) {
+    return typeof value === 'string';
+  }).join(',').split(',').map(function(tag) {
+    return tag.trim();
+  }).filter(Boolean);
+}
+
+function itemHasTag(item, tag) {
+  return getItemTags(item).indexOf(tag) !== -1;
+}
+
+function getRubricTags(rubric) {
+  var tags = [];
+  var seen = Object.create(null);
+  rubric.criteria.forEach(function(criterion) {
+    criterion.levels.forEach(function(level) {
+      if (level.descriptor_type !== 'checklist') return;
+      level.items.forEach(function(item) {
+        [item].concat(item.sub_items || []).forEach(function(taggedItem) {
+          getItemTags(taggedItem).forEach(function(tag) {
+            if (!seen[tag]) {
+              seen[tag] = true;
+              tags.push(tag);
+            }
+          });
+        });
+      });
+    });
+  });
+  return tags;
+}
+
+function levelHasTag(level, tag) {
+  return level.descriptor_type === 'checklist' && level.items.some(function(item) {
+    return itemHasTag(item, tag) || (item.sub_items || []).some(function(sub) { return itemHasTag(sub, tag); });
+  });
+}
+
+function renderLevel(level, tagFilter) {
+  var section = document.createElement('div');
+  section.className = 'band-section';
+
+  var header = document.createElement('div');
+  header.className = 'band-header';
+  header.textContent = 'Band ' + level.band_label;
+  section.appendChild(header);
+
+  if (level.descriptor_type === 'narrative') {
+    var p = document.createElement('p');
+    p.className = 'narrative-text';
+    p.textContent = level.narrative;
+    section.appendChild(p);
+  } else {
+    if (level.preamble) {
+      var pre = document.createElement('p');
+      pre.className = 'preamble-text';
+      pre.textContent = level.preamble;
+      section.appendChild(pre);
+    }
+    level.items.forEach(function(item) {
+      if (!tagFilter || itemHasTag(item, tagFilter)) {
+        section.appendChild(renderChecklistItem(item, false));
+      }
+      if (item.sub_items) {
+        item.sub_items.forEach(function(sub) {
+          if (!tagFilter || itemHasTag(sub, tagFilter)) {
+            section.appendChild(renderChecklistItem(sub, true));
+          }
+        });
+      }
+    });
+  }
+
+  return section;
+}
+
+function renderCriterionCard(criterion, focusBandFilter, tagFilter) {
+  var card = document.createElement('div');
+  card.className = 'criterion-card';
+
+  var title = document.createElement('h2');
+  title.className = 'criterion-title';
+  title.textContent = criterion.name;
+  card.appendChild(title);
+
+  var levels = criterion.levels;
+  if (tagFilter) {
+    levels = levels.map(function(level, index) {
+      return { level: level, index: index, bandOrder: parseInt(level.band, 10) };
+    }).filter(function(entry) {
+      return levelHasTag(entry.level, tagFilter);
+    }).sort(function(a, b) {
+      if (Number.isNaN(a.bandOrder) || Number.isNaN(b.bandOrder)) return a.index - b.index;
+      return a.bandOrder - b.bandOrder;
+    }).map(function(entry) { return entry.level; });
+    if (!levels.length) return null;
+  }
+
+  levels.forEach(function(level) {
+    if (focusBandFilter && level.band !== focusBandFilter) return;
+    card.appendChild(renderLevel(level, tagFilter));
+  });
+
+  return card;
+}
+
+function renderProgressBar() {
+  var bar = document.createElement('div');
+  bar.className = 'progress-bar';
+  bar.setAttribute('aria-live', 'polite');
+  bar.setAttribute('aria-atomic', 'true');
+
+  activeRubric.criteria.forEach(function(criterion) {
+    var prog = getProgress(criterion.id);
+    var shortName = criterion.name.split(':')[0];
+    var span = document.createElement('span');
+    span.textContent = shortName + ': ' + prog.complete + ' / ' + prog.total + ' complete';
+    bar.appendChild(span);
+  });
+
+  return bar;
+}
+
+// ── Library screen ─────────────────────────────────────────────────────────
+function renderLibrary(app) {
+  var pageHeader = document.createElement('div');
+  pageHeader.className = 'library-page-header';
+  var ph1 = document.createElement('h1');
+  ph1.textContent = 'Rubric Library';
+  var php = document.createElement('p');
+  php.textContent = 'Select a rubric to begin self-assessment, or import a new one.';
+  pageHeader.appendChild(ph1);
+  pageHeader.appendChild(php);
+  app.appendChild(pageHeader);
+
+  var wrap = document.createElement('div');
+  wrap.className = 'library-wrap';
+
+  var errEl = document.createElement('p');
+  errEl.className = 'library-error';
+  errEl.setAttribute('role', 'alert');
+  errEl.textContent = libraryError;
+
+  var importRow = document.createElement('div');
+  importRow.className = 'library-import-row';
+  importRow.style.marginBottom = '1rem';
+
+  var fileBtn = document.createElement('button');
+  fileBtn.className = 'btn-export';
+  fileBtn.textContent = 'Import Rubric JSON';
+  fileBtn.addEventListener('click', function() {
+    document.getElementById('file-import-input').value = '';
+    document.getElementById('file-import-input').click();
+  });
+
+  var pasteBtn = document.createElement('button');
+  pasteBtn.className = 'btn-export';
+  pasteBtn.textContent = 'Paste JSON';
+  pasteBtn.addEventListener('click', function() {
+    showPasteOverlay = true;
+    render();
+  });
+
+  importRow.appendChild(fileBtn);
+  importRow.appendChild(pasteBtn);
+  importRow.appendChild(errEl);
+
+  wrap.appendChild(importRow);
+
+  var list = listLibrary();
+  var grid = document.createElement('div');
+  grid.className = 'library-grid';
+
+  list.forEach(function(entry) {
+    var card = document.createElement('div');
+    card.className = 'library-card';
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'library-card-title';
+    titleEl.textContent = entry.title;
+
+    var idEl = document.createElement('div');
+    idEl.className = 'library-card-id';
+    idEl.textContent = entry.rubric_id;
+
+    var actions = document.createElement('div');
+    actions.className = 'library-card-actions';
+
+    var selectBtn = document.createElement('button');
+    selectBtn.className = 'btn-select';
+    selectBtn.textContent = 'Select';
+    selectBtn.addEventListener('click', (function(rid) {
+      return function() {
+        var lib = loadLibrary();
+        var rubric = lib[rid];
+        if (!rubric) return;
+        activeRubric = deepCopyAndReset(rubric);
+        studentName = '';
+        selectedTag = '';
+        assessmentComments = '';
+        commentsExpanded = false;
+        currentView = 'welcome';
+        libraryError = '';
+        render();
+      };
+    })(entry.rubric_id));
+
+    var editBtn = document.createElement('button');
+    editBtn.className = 'btn-export';
+    editBtn.textContent = 'Edit JSON';
+    editBtn.addEventListener('click', function() {
+      editingRubricId = entry.rubric_id;
+      showRubricEditor = true;
+      render();
+    });
+
+    var exportBtn = document.createElement('button');
+    exportBtn.className = 'btn-export';
+    exportBtn.textContent = 'Export JSON';
+    exportBtn.addEventListener('click', function() {
+      var rubric = _library[entry.rubric_id];
+      var filename = sanitizeFilename(rubric.title) + '.json';
+      downloadFile(JSON.stringify(rubric, null, 2), filename, 'application/json');
+    });
+
+    var delBtn = document.createElement('button');
+    delBtn.className = 'btn-delete';
+    delBtn.title = 'Delete this rubric';
+    delBtn.textContent = '\uD83D\uDDD1';
+    delBtn.setAttribute('aria-label', 'Delete ' + entry.title);
+    delBtn.addEventListener('click', (function(rid, rtitle) {
+      return function() {
+        var list2 = listLibrary();
+        if (list2.length <= 1) {
+          libraryError = 'Cannot delete the only remaining rubric.';
+          render();
+          return;
+        }
+        var confirmed = confirm("Delete '" + rtitle + "'?");
+        if (!confirmed) return;
+        deleteRubricFromLibrary(rid);
+        libraryError = '';
+        render();
+      };
+    })(entry.rubric_id, entry.title));
+
+    actions.appendChild(selectBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(exportBtn);
+    card.appendChild(delBtn);
+    card.appendChild(titleEl);
+    card.appendChild(idEl);
+    card.appendChild(actions);
+    grid.appendChild(card);
+  });
+
+  wrap.appendChild(grid);
+  app.appendChild(wrap);
+
+  if (showPasteOverlay) {
+    renderPasteOverlay(app);
+  }
+  if (showRubricEditor) {
+    renderRubricEditor(app);
+  }
+}
+
+// ── Paste overlay ──────────────────────────────────────────────────────────
+function renderPasteOverlay(app) {
+  var backdrop = document.createElement('div');
+  backdrop.className = 'overlay-backdrop';
+
+  var panel = document.createElement('div');
+  panel.className = 'overlay-panel';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-label', 'Paste Rubric JSON');
+
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Paste Rubric JSON';
+  panel.appendChild(h3);
+
+  var hint = document.createElement('p');
+  hint.style.cssText = 'margin:0;font-size:0.82rem;color:#5a6a7e;';
+  hint.textContent = 'Paste a valid rubric JSON object below, then click Load.';
+  panel.appendChild(hint);
+
+  var ta = document.createElement('textarea');
+  ta.placeholder = '{ "rubric_id": "...", "title": "...", "criteria": [...] }';
+  panel.appendChild(ta);
+
+  var errEl = document.createElement('p');
+  errEl.className = 'overlay-error';
+  errEl.setAttribute('role', 'alert');
+  errEl.textContent = '';
+  panel.appendChild(errEl);
+
+  var btnRow = document.createElement('div');
+  btnRow.className = 'overlay-btn-row';
+
+  var loadBtn = document.createElement('button');
+  loadBtn.className = 'btn-overlay-load';
+  loadBtn.textContent = 'Load';
+  loadBtn.addEventListener('click', function() {
+    var err = importRubricJSON(ta.value);
+    if (err) {
+      ta.classList.add('invalid');
+      errEl.textContent = err;
+    } else {
+      ta.classList.remove('invalid');
+      showPasteOverlay = false;
+      libraryError = '';
+      render();
+    }
+  });
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.className = 'btn-overlay-cancel';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.addEventListener('click', function() {
+    showPasteOverlay = false;
+    render();
+  });
+
+  backdrop.addEventListener('click', function(e) {
+    if (e.target === backdrop) {
+      showPasteOverlay = false;
+      render();
+    }
+  });
+
+  btnRow.appendChild(loadBtn);
+  btnRow.appendChild(cancelBtn);
+  panel.appendChild(btnRow);
+  backdrop.appendChild(panel);
+  app.appendChild(backdrop);
+
+  setTimeout(function() { ta.focus(); }, 30);
+}
+
+function renderRubricEditor(app) {
+  var rubric = _library[editingRubricId];
+  if (!rubric) {
+    showRubricEditor = false;
+    return;
+  }
+
+  var backdrop = document.createElement('div');
+  backdrop.className = 'overlay-backdrop';
+
+  var panel = document.createElement('div');
+  panel.className = 'overlay-panel';
+  panel.style.maxWidth = '820px';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-label', 'Edit Rubric JSON');
+
+  var heading = document.createElement('h3');
+  heading.textContent = 'Edit Rubric JSON';
+  panel.appendChild(heading);
+
+  var hint = document.createElement('p');
+  hint.style.cssText = 'margin:0;font-size:0.82rem;color:#5a6a7e;';
+  hint.textContent = 'Save validates the rubric and updates your local library.';
+  panel.appendChild(hint);
+
+  var textarea = document.createElement('textarea');
+  textarea.value = JSON.stringify(rubric, null, 2);
+  textarea.spellcheck = false;
+  textarea.setAttribute('aria-label', 'Rubric JSON');
+  textarea.style.minHeight = '55vh';
+  textarea.style.maxHeight = 'calc(100vh - 250px)';
+  panel.appendChild(textarea);
+
+  var errorMessage = document.createElement('p');
+  errorMessage.className = 'overlay-error';
+  errorMessage.setAttribute('role', 'alert');
+  panel.appendChild(errorMessage);
+
+  var buttonRow = document.createElement('div');
+  buttonRow.className = 'overlay-btn-row';
+
+  var saveButton = document.createElement('button');
+  saveButton.className = 'btn-overlay-load';
+  saveButton.textContent = 'Save';
+  saveButton.addEventListener('click', function() {
+    var editedRubric;
+    try {
+      editedRubric = JSON.parse(textarea.value);
+    } catch(e) {
+      textarea.classList.add('invalid');
+      errorMessage.textContent = 'Invalid JSON: ' + e.message;
+      return;
+    }
+    var error = validateRubric(editedRubric);
+    if (!error && editedRubric.rubric_id !== editingRubricId && _library[editedRubric.rubric_id]) {
+      error = 'A rubric with this ID already exists.';
+    }
+    if (error) {
+      textarea.classList.add('invalid');
+      errorMessage.textContent = 'Validation error: ' + error;
+      return;
+    }
+
+    textarea.classList.remove('invalid');
+    if (editedRubric.rubric_id !== editingRubricId) deleteRubricFromLibrary(editingRubricId);
+    saveRubricToLibrary(deepCopyAndReset(editedRubric));
+    editingRubricId = '';
+    showRubricEditor = false;
+    libraryError = '';
+    render();
+  });
+
+  var exportButton = document.createElement('button');
+  exportButton.className = 'btn-overlay-cancel';
+  exportButton.textContent = 'Export JSON';
+  exportButton.addEventListener('click', function() {
+    var editedRubric;
+    try {
+      editedRubric = JSON.parse(textarea.value);
+    } catch(e) {
+      errorMessage.textContent = 'Invalid JSON: ' + e.message;
+      return;
+    }
+    var error = validateRubric(editedRubric);
+    if (error) {
+      errorMessage.textContent = 'Validation error: ' + error;
+      return;
+    }
+    var filename = sanitizeFilename(editedRubric.title) + '.json';
+    downloadFile(JSON.stringify(editedRubric, null, 2), filename, 'application/json');
+    errorMessage.textContent = '';
+  });
+
+  var cancelButton = document.createElement('button');
+  cancelButton.className = 'btn-overlay-cancel';
+  cancelButton.textContent = 'Cancel';
+  cancelButton.addEventListener('click', function() {
+    editingRubricId = '';
+    showRubricEditor = false;
+    render();
+  });
+
+  backdrop.addEventListener('click', function(event) {
+    if (event.target === backdrop) {
+      editingRubricId = '';
+      showRubricEditor = false;
+      render();
+    }
+  });
+
+  buttonRow.appendChild(saveButton);
+  buttonRow.appendChild(exportButton);
+  buttonRow.appendChild(cancelButton);
+  panel.appendChild(buttonRow);
+  backdrop.appendChild(panel);
+  app.appendChild(backdrop);
+
+  setTimeout(function() { textarea.focus(); }, 30);
+}
+
+function renderMarkdownOverlay(app) {
+  var backdrop = document.createElement('div');
+  backdrop.className = 'overlay-backdrop';
+
+  var panel = document.createElement('div');
+  panel.className = 'overlay-panel';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-label', 'Export Markdown');
+
+  var heading = document.createElement('h3');
+  heading.textContent = 'Markdown Export';
+  panel.appendChild(heading);
+
+  var textarea = document.createElement('textarea');
+  textarea.readOnly = true;
+  textarea.setAttribute('aria-label', 'Markdown content');
+  textarea.value = buildMarkdown();
+  panel.appendChild(textarea);
+
+  var buttonRow = document.createElement('div');
+  buttonRow.className = 'overlay-btn-row';
+
+  var downloadButton = document.createElement('button');
+  downloadButton.className = 'btn-overlay-load';
+  downloadButton.textContent = 'Download Markdown';
+  downloadButton.addEventListener('click', function() {
+    var filename = sanitizeFilename(studentName) + '_' + sanitizeFilename(activeRubric.rubric_id) + '_Rubric.md';
+    downloadFile(textarea.value, filename, 'text/markdown');
+  });
+
+  var closeButton = document.createElement('button');
+  closeButton.className = 'btn-overlay-cancel';
+  closeButton.textContent = 'Close';
+  closeButton.addEventListener('click', function() {
+    showMarkdownOverlay = false;
+    render();
+  });
+
+  backdrop.addEventListener('click', function(event) {
+    if (event.target === backdrop) {
+      showMarkdownOverlay = false;
+      render();
+    }
+  });
+
+  buttonRow.appendChild(downloadButton);
+  buttonRow.appendChild(closeButton);
+  panel.appendChild(buttonRow);
+  backdrop.appendChild(panel);
+  app.appendChild(backdrop);
+
+  setTimeout(function() {
+    textarea.focus();
+    textarea.select();
+  }, 30);
+}
+
+// ── Welcome screen ─────────────────────────────────────────────────────────
+function renderWelcome(app) {
+  var wrap = document.createElement('div');
+  wrap.className = 'welcome-wrap';
+
+  var card = document.createElement('div');
+  card.className = 'welcome-card';
+
+  var badge = document.createElement('span');
+  badge.style.cssText = 'display:inline-block;background:#1a2e4a;color:#fff;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:4px;letter-spacing:0.05em;margin-bottom:0.5rem;';
+  badge.textContent = 'MYP Design Self-Assessment';
+  card.appendChild(badge);
+
+  var h2 = document.createElement('h2');
+  h2.textContent = activeRubric ? activeRubric.title : 'Rubric Checker';
+  card.appendChild(h2);
+
+  var desc = document.createElement('p');
+  desc.textContent = 'Enter your name to begin checking your rubric.';
+  card.appendChild(desc);
+
+  var backBtn = document.createElement('button');
+  backBtn.style.cssText = 'background:none;border:none;color:#1a2e4a;font-size:0.85rem;font-weight:600;cursor:pointer;padding:0;margin-bottom:1rem;text-decoration:underline;font-family:inherit;';
+  backBtn.textContent = 'Back to Rubric Library';
+  backBtn.addEventListener('click', function() {
+    currentView = 'library';
+    libraryError = '';
+    render();
+  });
+  card.appendChild(backBtn);
+
+  var label = document.createElement('label');
+  label.setAttribute('for', 'student-name');
+  label.textContent = 'Enter your name:';
+  card.appendChild(label);
+
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.id = 'student-name';
+  input.placeholder = 'e.g. Alex Chen';
+  input.autocomplete = 'name';
+  input.setAttribute('aria-describedby', 'name-error');
+  card.appendChild(input);
+
+  var errorMsg = document.createElement('p');
+  errorMsg.className = 'error-msg';
+  errorMsg.id = 'name-error';
+  errorMsg.setAttribute('role', 'alert');
+  errorMsg.setAttribute('aria-live', 'assertive');
+  errorMsg.textContent = '';
+  card.appendChild(errorMsg);
+
+  var startBtn = document.createElement('button');
+  startBtn.className = 'btn-start';
+  startBtn.textContent = 'Start';
+  card.appendChild(startBtn);
+
+  function tryStart() {
+    var val = input.value.trim();
+    if (!val) {
+      input.classList.add('invalid');
+      errorMsg.textContent = 'Please enter your name to continue.';
+      input.focus();
+      return;
+    }
+    input.classList.remove('invalid');
+    errorMsg.textContent = '';
+    studentName = val;
+    currentView = 'full';
+    render();
+  }
+
+  startBtn.addEventListener('click', tryStart);
+  input.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryStart(); });
+  input.addEventListener('input', function() {
+    if (input.value.trim()) {
+      input.classList.remove('invalid');
+      errorMsg.textContent = '';
+    }
+  });
+
+  wrap.appendChild(card);
+  app.appendChild(wrap);
+
+  setTimeout(function() { input.focus(); }, 50);
+}
+
+// ── Main render ────────────────────────────────────────────────────────────
+function render() {
+  var app = document.getElementById('app');
+  app.innerHTML = '';
+
+  if (currentView === 'library') {
+    renderLibrary(app);
+    return;
+  }
+
+  if (currentView === 'welcome') {
+    renderWelcome(app);
+    return;
+  }
+
+  // Header
+  var header = document.createElement('header');
+  header.className = 'app-header';
+
+  var headerText = document.createElement('div');
+  headerText.className = 'app-header-text';
+  var h1 = document.createElement('h1');
+  h1.textContent = activeRubric ? activeRubric.title : 'Rubric Checker';
+  var sub = document.createElement('p');
+  sub.className = 'header-sub';
+  sub.textContent = 'Student: ' + studentName;
+  headerText.appendChild(h1);
+  headerText.appendChild(sub);
+
+  var changeBtn = document.createElement('button');
+  changeBtn.className = 'btn-change-rubric';
+  changeBtn.textContent = 'Change Rubric';
+  changeBtn.addEventListener('click', function() {
+    currentView = 'library';
+    studentName = '';
+    libraryError = '';
+    render();
+  });
+
+  header.appendChild(headerText);
+  header.appendChild(changeBtn);
+  app.appendChild(header);
+
+  // Progress
+  app.appendChild(renderProgressBar());
+
+  // View toggle bar
+  var toggleBar = document.createElement('div');
+  toggleBar.className = 'view-toggle-bar';
+  var availableTags = getRubricTags(activeRubric);
+
+  var fullBtn = document.createElement('button');
+  fullBtn.className = 'toggle-btn' + (currentView === 'full' ? ' active' : '');
+  fullBtn.textContent = 'Full View';
+  fullBtn.setAttribute('aria-pressed', currentView === 'full' ? 'true' : 'false');
+  fullBtn.addEventListener('click', function() { currentView = 'full'; render(); });
+
+  var focusBtn = document.createElement('button');
+  focusBtn.className = 'toggle-btn' + (currentView === 'focus' ? ' active' : '');
+  focusBtn.textContent = 'Focus Mode';
+  focusBtn.setAttribute('aria-pressed', currentView === 'focus' ? 'true' : 'false');
+  focusBtn.addEventListener('click', function() { currentView = 'focus'; render(); });
+
+  toggleBar.appendChild(fullBtn);
+  toggleBar.appendChild(focusBtn);
+
+  if (availableTags.length) {
+    var tagModeBtn = document.createElement('button');
+    tagModeBtn.className = 'toggle-btn' + (currentView === 'tag' ? ' active' : '');
+    tagModeBtn.textContent = 'Tag Mode';
+    tagModeBtn.setAttribute('aria-pressed', currentView === 'tag' ? 'true' : 'false');
+    tagModeBtn.addEventListener('click', function() {
+      if (availableTags.indexOf(selectedTag) === -1) selectedTag = availableTags[0];
+      currentView = 'tag';
+      render();
+    });
+    toggleBar.appendChild(tagModeBtn);
+  }
+
+  var commentsBtn = document.createElement('button');
+  commentsBtn.className = 'toggle-btn' + (commentsExpanded ? ' active' : '');
+  commentsBtn.textContent = 'Comments';
+  commentsBtn.setAttribute('aria-expanded', commentsExpanded ? 'true' : 'false');
+  commentsBtn.setAttribute('aria-controls', 'comments-section');
+  commentsBtn.addEventListener('click', function() {
+    commentsExpanded = !commentsExpanded;
+    render();
+  });
+  toggleBar.appendChild(commentsBtn);
+
+  app.appendChild(toggleBar);
+
+  var commentsPanel = document.createElement('section');
+  commentsPanel.className = 'comments-panel';
+  commentsPanel.id = 'comments-section';
+  commentsPanel.hidden = !commentsExpanded;
+  var commentsLabel = document.createElement('label');
+  commentsLabel.setAttribute('for', 'assessment-comments');
+  commentsLabel.textContent = 'Comments';
+  var commentsTextarea = document.createElement('textarea');
+  commentsTextarea.id = 'assessment-comments';
+  commentsTextarea.value = assessmentComments;
+  commentsTextarea.placeholder = 'Add comments for this assessment';
+  commentsTextarea.addEventListener('input', function() {
+    assessmentComments = commentsTextarea.value;
+  });
+  commentsPanel.appendChild(commentsLabel);
+  commentsPanel.appendChild(commentsTextarea);
+  app.appendChild(commentsPanel);
+
+  // Focus mode band selector
+  if (currentView === 'focus') {
+    var bandBar = document.createElement('div');
+    bandBar.className = 'band-selector';
+    var lbl = document.createElement('span');
+    lbl.style.fontWeight = '600';
+    lbl.style.fontSize = '0.875rem';
+    lbl.textContent = 'Band:';
+    bandBar.appendChild(lbl);
+
+    ['3-4', '5-6', '7-8'].forEach(function(band) {
+      var bb = document.createElement('button');
+      bb.className = 'band-btn' + (focusBand === band ? ' active' : '');
+      bb.textContent = band;
+      bb.setAttribute('aria-pressed', focusBand === band ? 'true' : 'false');
+      bb.addEventListener('click', function() { focusBand = band; render(); });
+      bandBar.appendChild(bb);
+    });
+
+    var backBtn = document.createElement('button');
+    backBtn.className = 'toggle-btn';
+    backBtn.style.marginLeft = 'auto';
+    backBtn.textContent = 'Back to Full View';
+    backBtn.addEventListener('click', function() { currentView = 'full'; render(); });
+    bandBar.appendChild(backBtn);
+
+    app.appendChild(bandBar);
+  }
+
+  if (currentView === 'tag') {
+    var tagBar = document.createElement('div');
+    tagBar.className = 'band-selector';
+    var tagLabel = document.createElement('span');
+    tagLabel.style.fontWeight = '600';
+    tagLabel.style.fontSize = '0.875rem';
+    tagLabel.textContent = 'Tag:';
+    tagBar.appendChild(tagLabel);
+
+    availableTags.forEach(function(tag) {
+      var tagBtn = document.createElement('button');
+      tagBtn.className = 'band-btn' + (selectedTag === tag ? ' active' : '');
+      tagBtn.textContent = tag;
+      tagBtn.setAttribute('aria-pressed', selectedTag === tag ? 'true' : 'false');
+      tagBtn.addEventListener('click', function() {
+        selectedTag = tag;
+        render();
+      });
+      tagBar.appendChild(tagBtn);
+    });
+
+    app.appendChild(tagBar);
+  }
+
+  // Main content
+  var main = document.createElement('main');
+  main.className = 'main-content' + (currentView === 'focus' ? ' focus-mode' : '');
+
+  var grid = document.createElement('div');
+  grid.className = currentView === 'focus' ? 'focus-grid' : 'criteria-grid';
+
+  activeRubric.criteria.forEach(function(criterion) {
+    var bandFilter = currentView === 'focus' ? focusBand : null;
+    var tagFilter = currentView === 'tag' ? selectedTag : null;
+    var criterionCard = renderCriterionCard(criterion, bandFilter, tagFilter);
+    if (criterionCard) grid.appendChild(criterionCard);
+  });
+
+  main.appendChild(grid);
+  app.appendChild(main);
+
+  // Export footer
+  var footer = document.createElement('div');
+  footer.className = 'export-footer';
+
+  var mdBtn = document.createElement('button');
+  mdBtn.className = 'btn-export';
+  mdBtn.textContent = 'Export Markdown';
+  mdBtn.addEventListener('click', exportMarkdown);
+
+  var jsonBtn = document.createElement('button');
+  jsonBtn.className = 'btn-export';
+  jsonBtn.textContent = 'Export JSON';
+  jsonBtn.addEventListener('click', exportJSON);
+
+  var loadCompletedBtn = document.createElement('button');
+  loadCompletedBtn.className = 'btn-export';
+  loadCompletedBtn.textContent = 'Load completed JSON';
+  loadCompletedBtn.addEventListener('click', function() {
+    var input = document.getElementById('completed-import-input');
+    input.value = '';
+    input.click();
+  });
+
+  var completedLoadStatus = document.createElement('span');
+  completedLoadStatus.setAttribute('role', 'status');
+  completedLoadStatus.setAttribute('aria-live', 'polite');
+  completedLoadStatus.style.cssText = 'align-self:center;font-size:0.82rem;color:' + (completedLoadMessage && completedLoadMessage.indexOf('Loaded completed assessment for ') !== 0 ? '#b91c1c' : '#166534') + ';';
+  completedLoadStatus.textContent = completedLoadMessage;
+
+  var copyBtn = document.createElement('button');
+  copyBtn.className = 'btn-export';
+  copyBtn.textContent = 'Copy for Google Docs';
+
+  var copyStatus = document.createElement('span');
+  copyStatus.setAttribute('role', 'status');
+  copyStatus.setAttribute('aria-live', 'polite');
+  copyStatus.style.cssText = 'align-self:center;color:#166534;font-size:0.82rem;';
+  copyBtn.addEventListener('click', function() { copyForGoogleDocs(copyStatus); });
+
+  footer.appendChild(mdBtn);
+  footer.appendChild(jsonBtn);
+  footer.appendChild(loadCompletedBtn);
+  footer.appendChild(completedLoadStatus);
+  footer.appendChild(copyBtn);
+  footer.appendChild(copyStatus);
+  app.appendChild(footer);
+
+  if (showMarkdownOverlay) {
+    renderMarkdownOverlay(app);
+  }
+}
+
+// ── File import wiring ─────────────────────────────────────────────────────
+document.getElementById('file-import-input').addEventListener('change', function(e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var err = importRubricJSON(ev.target.result);
+    if (err) {
+      libraryError = err;
+    } else {
+      libraryError = '';
+    }
+    render();
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('completed-import-input').addEventListener('change', function(e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var err = loadCompletedRubricJSON(ev.target.result);
+    if (err) completedLoadMessage = err;
+    render();
+  };
+  reader.onerror = function() {
+    completedLoadMessage = 'Could not read the selected file.';
+    render();
+  };
+  reader.readAsText(file);
+});
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+render();
+</script>
+
+</body></html>
