@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17483f">
+  <title>Rubric Checker | Quick Guide</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18352f;
+      --muted: #526760;
+      --green: #17483f;
+      --mint: #dcebe3;
+      --paper: #fbfaf5;
+      --line: #d6ded7;
+      --yellow: #f4cb58;
+      --coral: #b95742;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgba(23,72,63,.035) 31px 32px);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: var(--green); }
+    a:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+
+    .topbar {
+      padding: 0.7rem max(1.25rem, calc((100vw - 1100px) / 2));
+      color: #f7f5ec;
+      background: var(--green);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 3.5rem 1.5rem 4rem; }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2rem;
+      align-items: end;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.5rem;
+      color: var(--coral);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 { font-family: Georgia, "Palatino Linotype", serif; font-weight: 500; }
+    h1 { max-width: 720px; margin: 0; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 0.98; }
+    .intro-copy { max-width: 630px; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; }
+
+    .primary-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.85rem 1.1rem;
+      color: #fff;
+      background: var(--green);
+      border: 2px solid var(--green);
+      border-radius: 4px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .primary-link:hover { color: var(--green); background: transparent; }
+
+    .convert {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr);
+      gap: 2rem;
+      align-items: center;
+      margin: 2.5rem 0;
+      padding: 1.6rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .convert h2 { margin: 0; font-size: 1.8rem; }
+    .convert p { margin: 0.5rem 0 0; color: var(--muted); }
+    .activity-link { font-size: 1.1rem; font-weight: 750; }
+    .activity-link span { color: var(--coral); }
+
+    .guide-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .guide-heading h2 { margin: 0; font-size: 2rem; }
+    .guide-heading p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+    .steps li {
+      display: grid;
+      grid-template-columns: 4rem minmax(0, 1fr);
+      gap: 1rem;
+      padding: 1.25rem 0;
+      border-top: 1px solid var(--line);
+      counter-increment: step;
+    }
+    .steps li::before {
+      content: "0" counter(step);
+      color: var(--coral);
+      font: 1.2rem Georgia, "Palatino Linotype", serif;
+    }
+    .steps h3 { margin: 0; font-size: 1.2rem; }
+    .steps p { max-width: 780px; margin: 0.25rem 0 0; color: var(--muted); }
+
+    .status-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
+    }
+    .status-key span { padding: 0.15rem 0.5rem; border: 1px solid transparent; border-radius: 3px; font-size: 0.8rem; font-weight: 700; }
+    .blank { color: #4b5563; background: #f3f4f6; border-color: #d1d5db !important; }
+    .complete { color: #166534; background: #dcfce7; border-color: #86efac !important; }
+    .almost { color: #92400e; background: #fef3c7; border-color: #fcd34d !important; }
+    .not-done { color: #991b1b; background: #fee2e2; border-color: #fca5a5 !important; }
+
+    .note {
+      margin-top: 2.5rem;
+      padding: 1rem 1.2rem;
+      border-left: 4px solid var(--yellow);
+      background: rgba(244,203,88,.16);
+      color: var(--muted);
+    }
+    .note strong { color: var(--ink); }
+
+    footer {
+      padding: 1rem max(1.25rem, calc((100vw - 1100px) / 2));
+      color: #dcebe3;
+      background: var(--green);
+      font-size: 0.82rem;
+    }
+    footer a { color: #fff; }
+
+    @media (max-width: 700px) {
+      main { padding: 2.2rem 1.1rem 3rem; }
+      .intro, .convert { grid-template-columns: 1fr; gap: 1.2rem; }
+      .intro { align-items: start; }
+      .primary-link { justify-self: start; }
+      .convert { margin: 1.8rem 0; padding: 1.2rem 0; }
+      .guide-heading { display: block; }
+      .guide-heading p { margin-top: 0.25rem; }
+      .steps li { grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">Rubric Checker <span aria-hidden="true">/</span> Quick Guide</div>
+  <main>
+    <header class="intro">
+      <div>
+        <p class="eyebrow">A short guide for students and teachers</p>
+        <h1>Check the work.<br>Keep the thinking.</h1>
+        <p class="intro-copy">Use the Rubric Checker to mark evidence across achievement bands, add comments, and carry a completed assessment into a document or back into the app.</p>
+      </div>
+      <a class="primary-link" href="RubrCheck.html">Open the checker <span aria-hidden="true">&rarr;</span></a>
+    </header>
+
+    <section class="convert" aria-labelledby="convert-title">
+      <div>
+        <p class="eyebrow">Start with a rubric</p>
+        <h2 id="convert-title">Convert it to JSON</h2>
+        <p>Turn a rubric into the JSON format the checker can import.</p>
+      </div>
+      <a class="activity-link" href="https://app.flintk12.com/activities/rubric-json-con-297224" target="_blank" rel="noopener noreferrer">
+        Open the Flint rubric-to-JSON activity <span aria-hidden="true">&nearr;</span>
+      </a>
+    </section>
+
+    <div class="guide-heading">
+      <h2>Assessment flow</h2>
+      <p>From a rubric file to a shareable record.</p>
+    </div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Load a rubric</h3>
+          <p>In the checker, choose <strong>Import Rubric JSON</strong> to select a saved file, or use <strong>Paste JSON</strong>. The built-in rubric is ready in the library. You can also inspect <a href="sampleRubric.json">the sample rubric JSON</a>.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Start and mark evidence</h3>
+          <p>Select a rubric, enter the student's name, then click an item to cycle its status. Items move through blank, complete, almost, not done, and back to blank.</p>
+          <div class="status-key" aria-label="Status colors">
+            <span class="blank">Blank</span><span class="complete">Complete</span><span class="almost">Almost</span><span class="not-done">Not Done</span>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Find the right view</h3>
+          <p><strong>Focus Mode</strong> narrows the rubric to one band. If the rubric has tags, <strong>Tag Mode</strong> filters items by tag. Use the <strong>Comments</strong> button on the view bar to open or collapse the assessment comments box.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Copy or export your assessment</h3>
+          <p>Use <strong>Copy for Google Docs</strong> and paste with <kbd>Cmd</kbd>+<kbd>V</kbd> on Mac. <strong>Export Markdown</strong> opens copyable Markdown with an optional download. <strong>Export JSON</strong> saves the student's statuses and comments; use <strong>Load completed JSON</strong> later to reopen that assessment.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Edit a rubric</h3>
+          <p>From the rubric library, choose <strong>Edit JSON</strong> to change a rubric, validate and save it, or export the edited JSON. Saved rubrics stay in this browser's local storage.</p>
+        </div>
+      </li>
+    </ol>
+
+    <aside class="note">
+      <strong>Local by design.</strong> Rubric library changes are stored in this browser on this device. Export completed JSON when you need a portable copy or want to continue the assessment elsewhere.
+    </aside>
+  </main>
+  <footer>Rubric Checker &middot; <a href="RubrCheck.html">Open app</a></footer>
+</body>
+</html>
